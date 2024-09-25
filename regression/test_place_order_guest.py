@@ -50,8 +50,7 @@ class TestOrderPlacementGuest:
         assert home_page.get_quantity_from_cart_icon() == '2', \
             f"Expected quantity in cart to be 2 but got {home_page.get_quantity_from_cart_icon()}"
 
-    @pytest.mark.dependency(name="proceed_to_checkout")
-    @pytest.mark.dependency(depends=["add_to_cart"])
+    @pytest.mark.dependency(depends=["add_to_cart"], name="proceed_to_checkout")
     @pytest.mark.testcase("2")
     def test_proceed_to_checkout(self, setup):
         driver = setup  # Access the driver passed from the fixture
@@ -79,8 +78,7 @@ class TestOrderPlacementGuest:
         assert checkout_page.get_checkout_page_header() == 'Shipping Review & Payments', \
             f"Expected 'Shipping Review & Payments' but got {checkout_page.get_checkout_page_header()}"
 
-    @pytest.mark.dependency(depends=["proceed_to_checkout"])
-    @pytest.mark.dependency(name="fill_in_details")
+    @pytest.mark.dependency(depends=["proceed_to_checkout"], name="fill_in_details")
     @pytest.mark.testcase("3")
     def test_fill_in_details(self, setup):
         driver = setup
@@ -142,18 +140,21 @@ class TestOrderPlacementGuest:
         assert "Thank you for your purchase!" in order_confirmation_page.get_order_confirmation_title(), \
             f"Expected 'Thank you for your purchase!', but got {order_confirmation_page.get_order_confirmation_title()}"
 
-    @pytest.mark.dependency(name="order_confirmation")
-    @pytest.mark.dependency(depends=["fill_in_details"])
+    @pytest.mark.dependency(depends=["fill_in_details"], name="order_confirmation")
     @pytest.mark.testcase("4")
     def test_order_confirmation(self, setup):
         driver = setup
         order_confirmation_page = OrderConfirmationPage(driver)
 
-        # Check the order number is provided
-        assert "Your order # is: " in order_confirmation_page.get_order_number(), \
-        f"Expected to provide order number, but got {order_confirmation_page.get_order_number()}"
+        # Check the order message is provided
+        assert "Your order # is: " in order_confirmation_page.get_order_number_message(), \
+            f"Expected to provide order message, but got {order_confirmation_page.get_order_number_message()}"
 
-        # Continue button presence
+        order_number_length = len(order_confirmation_page.get_order_number())
+        assert order_number_length > 0, \
+            f"Expected to provide a valid order number, actual length is {order_number_length}"
+
+        # Continue shopping button presence
         assert order_confirmation_page.get_continue_shopping_button().is_enabled()
 
         # Create account button presence

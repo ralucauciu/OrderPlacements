@@ -8,7 +8,6 @@ class HomePage:
         self.driver = driver
 
     # Locators
-    LOGO_BUTTON = (By.CLASS_NAME, "logo")
     SIGN_IN_BUTTON = (By.CSS_SELECTOR, "li.authorization-link a")
     WOMEN_MENU = (By.LINK_TEXT, "Women")
     TOPS_MENU = (By.LINK_TEXT, "Tops")
@@ -26,12 +25,6 @@ class HomePage:
     PROCEED_TO_CHECKOUT_BUTTON = (By.ID, "top-cart-btn-checkout")
 
     #Actions
-    def click_logo(self):
-        logo_button = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable(self.LOGO_BUTTON)
-        )
-        logo_button.click()
-
     def click_sign_in_button(self):
         sign_in_button = WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable(self.SIGN_IN_BUTTON)
@@ -88,7 +81,7 @@ class HomePage:
         add_to_cart_button.click()
 
     def get_confirmation_message(self):
-        confirmation_message = WebDriverWait(self.driver, 10).until(
+        confirmation_message = WebDriverWait(self.driver, 30).until(
             EC.visibility_of_element_located(self.CONFIRMATION_MESSAGE)
         )
         return confirmation_message.text

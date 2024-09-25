@@ -1,3 +1,4 @@
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -25,6 +26,7 @@ class CheckoutPage:
     NEXT_BUTTON = (By.CSS_SELECTOR, ".button.button.action.continue.primary")
     PAYMENT_METHOD_SECTION = (By.CLASS_NAME, "payment-group")
     CHECKBOX_ADDRESS_BUTTON = (By.ID, "billing-address-same-as-shipping-checkmo")
+    LOADER_SPINNER = (By.XPATH, "//div[@class='loader']/img[@alt='Loading...']")
     PLACE_ORDER_BUTTON = (By.XPATH, "//div[@class='actions-toolbar']/div[@class='primary']/button[@class='action primary checkout']")
 
 
@@ -141,7 +143,17 @@ class CheckoutPage:
         checkbox_address_button.click()
 
     def click_place_order_button(self):
-        place_order_button = WebDriverWait(self.driver, 40).until(
-            EC.visibility_of_element_located(self.PLACE_ORDER_BUTTON)
-        )
-        place_order_button.click()
+        try:
+            # Wait for the loader spinner to disappear
+            WebDriverWait(self.driver, 20).until(
+                EC.invisibility_of_element_located(self.LOADER_SPINNER)
+            )
+
+            place_order_button = WebDriverWait(self.driver, 20).until(
+                EC.visibility_of_element_located(self.PLACE_ORDER_BUTTON)
+            )
+            place_order_button.click()
+            print("Place order button clicked")
+        except TimeoutException:
+            print("Loader or Place Order button not found within the time limit.")
+            return None  # Handle the case where the element doesn't appear within the timeout

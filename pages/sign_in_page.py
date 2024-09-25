@@ -1,3 +1,4 @@
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -35,7 +36,17 @@ class SignInPage:
         sign_in_button.click()
 
     def get_user_logged_in(self):
-        user_logged_name = WebDriverWait(self.driver, 60).until(
-            EC.visibility_of_element_located(self.USER_LOGGED_NAME)
-        )
-        return user_logged_name.text
+        try:
+            # Wait until the element is visible
+            user_logged_name_welcome = WebDriverWait(self.driver, 60).until(
+                EC.text_to_be_present_in_element(self.USER_LOGGED_NAME, "Welcome")
+            )
+            if user_logged_name_welcome:
+                user_logged_name = WebDriverWait(self.driver, 10).until(
+                    EC.visibility_of_element_located(self.USER_LOGGED_NAME)
+                )
+                return user_logged_name.text
+            else:
+                return None  # Or return a default value like 'No user logged in'
+        except TimeoutException:
+            return None  # Handle the case where the element doesn't appear within the timeout

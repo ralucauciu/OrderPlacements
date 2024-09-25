@@ -127,9 +127,13 @@ class TestOrderPlacement:
         assert "Thank you for your purchase!" in order_confirmation_page.get_order_confirmation_title(), \
             f"Expected 'Thank you for your purchase!', but got {order_confirmation_page.get_order_confirmation_title()}"
 
-        # Check the order number is provided
-        assert "Your order # is: " in order_confirmation_page.get_order_number(), \
-        f"Expected to provide order number, but got {order_confirmation_page.get_order_number()}"
+        # Check the order message is provided
+        assert "Your order # is: " in order_confirmation_page.get_order_number_message(), \
+            f"Expected to provide order message, but got {order_confirmation_page.get_order_number_message()}"
+
+        order_number_length = len(order_confirmation_page.get_order_number())
+        assert order_number_length > 0, \
+            f"Expected to provide a valid order number, actual length is {order_number_length}"
 
         # Continue button presence
         assert order_confirmation_page.get_continue_shopping_button().is_enabled()
