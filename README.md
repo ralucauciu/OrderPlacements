@@ -16,7 +16,7 @@ Or you can clone the repository by:
 
 - Open PyCharm
 - Go to Git tab and select Clone
-- Fill in the URL with: https://github.com/cameliag90/PhytonAutomation.git
+- Fill in the URL with: https://github.com/ralucauciu/OrderPlacements
 - Click clone
 
 Set up a virtual environment (optional but recommended):
